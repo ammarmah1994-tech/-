@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار نهاية متتالية - إعداد الأستاذ عمار | Ammar</title>
+  <!-- MathJax لعرض الرموز الرياضية بدقة -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --accent: #f59e0b;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+    .container { max-width: 900px; margin: 0 auto; }
+    
+    /* تصميم شعار Ammar والترويسة */
+    .header { 
+      text-align: center; 
+      margin-bottom: 25px; 
+      background: var(--card); 
+      padding: 30px 20px; 
+      border-radius: 16px; 
+      border: 1px solid var(--border); 
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
+      position: relative;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #ffffff;
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      border-radius: 50px;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.35);
+      margin-bottom: 15px;
+      border: 2px solid #ffffff;
+    }
+    .header h1 { margin: 10px 0 5px 0; color: var(--primary); font-size: 1.5rem; }
+    .header p { margin: 5px 0 0 0; color: #64748b; font-size: 1rem; }
+    
+    .stats-bar { 
+      display: flex; 
+      justify-content: space-around; 
+      background: #e0f2fe; 
+      padding: 12px; 
+      border-radius: 10px; 
+      font-weight: bold; 
+      margin-bottom: 20px; 
+      color: var(--primary);
+    }
+    .question-card { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      padding: 22px; 
+      margin-bottom: 20px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
+    }
+    .question-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 15px; color: var(--primary); }
+    .options { display: grid; gap: 10px; }
+    .option-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 12px 16px; 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+    }
+    .option-label:hover { background-color: #f1f5f9; border-color: var(--primary-light); }
+    .option-label input { margin: 0; width: 18px; height: 18px; }
+    .explanation { 
+      display: none; 
+      margin-top: 15px; 
+      padding: 14px; 
+      border-radius: 8px; 
+      background-color: #f8fafc; 
+      border-right: 4px solid var(--primary-light); 
+      font-size: 0.95rem; 
+    }
+    .btn { 
+      display: inline-block; 
+      background: linear-gradient(135deg, #1e3a8a, #2563eb); 
+      color: white; 
+      border: none; 
+      padding: 14px 28px; 
+      font-size: 1.15rem; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      width: 100%; 
+      transition: 0.2s; 
+      font-weight: bold; 
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+    .btn:hover { background: #1e3a8a; }
+    .result-box { 
+      display: none; 
+      background: var(--card); 
+      padding: 25px; 
+      border-radius: 14px; 
+      border: 2px solid var(--primary); 
+      text-align: center; 
+      margin-bottom: 25px; 
+    }
+    .score { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin: 10px 0; }
+    .correct-opt { background: #dcfce7 !important; border-color: var(--success) !important; font-weight: 600; }
+    .wrong-opt { background: #fee2e2 !important; border-color: var(--danger) !important; }
+    footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo-badge">⚡ AMMAR MATH ⚡</div>
+    <h1>اختبار مؤتمت: وحدة نهاية متتالية</h1>
+    <p>منهاج بكالوريا علمي - الجمهورية العربية السورية (إعداد الأستاذ: Ammar)</p>
+  </div>
+
+  <div class="stats-bar">
+    <div>عدد الأسئلة: 40</div>
+    <div>الدرجة الكلية: 40/40</div>
+    <div>نوع الأسئلة: اختيار من متعدد (مؤتمت)</div>
+  </div>
+
+  <div id="resultBox" class="result-box">
+    <h2>النتيجة النهائية</h2>
+    <div class="score" id="scoreDisplay">0 / 40</div>
+    <p id="gradeMsg"></p>
+  </div>
+
+  <form id="quizForm">
+    <div id="questionsContainer"></div>
+    <button type="button" class="btn" id="submitBtn" onclick="submitQuiz()">إنهاء الاختبار وعرض النتيجة والتعليلات</button>
+  </form>
+
+  <footer>
+    منصة الأستاذ Ammar لاختبارات الرياضيات المؤتمتة &copy;
+  </footer>
+</div>
+
+<script>
+const quizData = [
+  {
+    q: "إذا كانت المتتالية المعرفة بـ $u_n = \\frac{2n - 1}{n + 3}$، فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
+    options: ["$0$", "$2$", "$+\\infty$", "$-1$"],
+    answer: 1,
+    exp: "نهاية تابع كسري عند اللانهاية بأخذ الحد الأعلى درجة: $\\frac{2n}{n} = 2$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\frac{3n^2 + 5}{1 - 2n^2}$ هي:",
+    options: ["$-\\frac{3}{2}$", "$\\frac{3}{2}$", "$0$", "$+\\infty$"],
+    answer: 0,
+    exp: "نسبة أمثال الحدين المسيطرين: $\\frac{3n^2}{-2n^2} = -\\frac{3}{2}$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\frac{n + 1}{n^2 + 4}$ هي:",
+    options: ["$1$", "$+\\infty$", "$0$", "غير موجودة"],
+    answer: 2,
+    exp: "درجة البسط أقل من درجة المقام، فتكون النهاية مساوية للصفر."
+  },
+  {
+    q: "إذا كانت $u_n = \\frac{5n^3 - 2}{n^2 + 7}$، فإن المتتالية:",
+    options: ["متقاربة نحو $0$", "متقاربة نحو $5$", "متباعدة نحو $+\\infty$", "متباعدة نحو $-\\infty$"],
+    answer: 2,
+    exp: "درجة البسط أعلى من درجة المقام، والحد المسيطر هو $\\frac{5n^3}{n^2} = 5n \\to +\\infty$."
+  },
+  {
+    q: "نهاية المتتالية الهندسية $u_n = (0.75)^n$ تساوي:",
+    options: ["$0$", "$1$", "$+\\infty$", "غير معينة"],
+    answer: 0,
+    exp: "بما أن $\vert{}q\vert{} = \vert{}0.75\vert{} < 1$، فإن $\\lim_{n \\to \\infty} q^n = 0$."
+  },
+  {
+    q: "المتتالية $u_n = (1.2)^n$ هي متتالية:",
+    options: ["متقاربة نحو $0$", "متباعدة نحو $+\\infty$", "متقاربة نحو $1$", "متناوبة وغير مستقرة"],
+    answer: 1,
+    exp: "الأساس $q = 1.2 > 1$، وبالتالي $\\lim_{n \\to \\infty} q^n = +\\infty$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = (-1)^n$ عند $n \\to \\infty$:",
+    options: ["$0$", "$1$", "$-1$", "غير موجودة"],
+    answer: 3,
+    exp: "تتراوح قيم المتتالية بين $1$ و $-1$ دورياً، فلا توجد نهاية محددة."
+  },
+  {
+    q: "نهاية المتتالية $u_n = (-0.4)^n$ تساوي:",
+    options: ["$0$", "$-1$", "$1$", "غير موجودة"],
+    answer: 0,
+    exp: "الأساس يقع في المجال $]-1, 1[$، وبالتالي النهاية معدومة."
+  },
+  {
+    q: "قيمة $\\lim_{n \\to \\infty} \\frac{3^n - 2^n}{3^n + 2^n}$ هي:",
+    options: ["$0$", "$1$", "$-1$", "$+\\infty$"],
+    answer: 1,
+    exp: "بإخراج $3^n$ عاملاً مشتركاً: $\\frac{1 - (2/3)^n}{1 + (2/3)^n} \\to \\frac{1-0}{1+0} = 1$."
+  },
+  {
+    q: "إذا كانت $u_n = \\frac{5^n + 4}{2^n + 3}$، فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
+    options: ["$0$", "$+\\infty$", "$\\frac{5}{2}$", "$1$"],
+    answer: 1,
+    exp: "الحد المهيمن في البسط $5^n$ ينمو أسرع بكثير من $2^n$، فنهايتها تؤول لـ $+\\infty$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\sqrt{n+1} - \\sqrt{n}$ تساوي:",
+    options: ["$+\\infty$", "$1$", "$0$", "$\\frac{1}{2}$"],
+    answer: 2,
+    exp: "بالضرب بالمرافق نجد: $\\frac{1}{\\sqrt{n+1} + \\sqrt{n}} \\to 0$."
+  },
+  {
+    q: "قيمة $\\lim_{n \\to \\infty} (\\sqrt{n^2 + 2n} - n)$ هي:",
+    options: ["$0$", "$1$", "$2$", "$+\\infty$"],
+    answer: 1,
+    exp: "بالضرب بالمرافق والقسمة على $n$: $\\frac{2n}{\\sqrt{n^2+2n}+n} = \\frac{2}{\\sqrt{1+2/n}+1} \\to \\frac{2}{2} = 1$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\sqrt{4n^2 + n} - 2n$ تساوي:",
+    options: ["$\\frac{1}{4}$", "$\\frac{1}{2}$", "$0$", "$+\\infty$"],
+    answer: 0,
+    exp: "المرافق يعطي: $\\frac{n}{\\sqrt{4n^2+n}+2n} = \\frac{1}{\\sqrt{4+1/n}+2} \\to \\frac{1}{2+2} = \\frac{1}{4}$."
+  },
+  {
+    q: "المتتالية $u_n = \\frac{\\cos(n)}{n}$ تسعى إلى:",
+    options: ["$1$", "$0$", "غير موجودة", "$-1$"],
+    answer: 1,
+    exp: "بالمقارنة والإحاطة: $-1 \\le \\cos(n) \\le 1 \\Rightarrow -\\frac{1}{n} \\le u_n \\le \\frac{1}{n}$، وحيث أن الطرفين ينتهيان إلى $0$، فالنهاية $0$."
+  },
+  {
+    q: "إذا كانت $u_n = \\frac{\\sin^2(n)}{n^2 + 1}$، فإن نهايتها تساوي:",
+    options: ["$0$", "$1$", "$+\\infty$", "غير معينة"],
+    answer: 0,
+    exp: "بما أن $0 \\le \\sin^2(n) \\le 1$، فإن $0 \\le u_n \\le \\frac{1}{n^2+1} \\to 0$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = 2n + (-1)^n$ هي:",
+    options: ["غير معينة", "$+\\infty$", "$0$", "$2$"],
+    answer: 1,
+    exp: "بالمقارنة: $u_n \\ge 2n - 1$، وحيث أن $(2n-1) \\to +\\infty$ فإن المتتالية تتباعد إلى $+\\infty$."
+  },
+  {
+    q: "إذا كانت $u_n = -n^2 + 3\\sin(n)$، فإن $\\lim_{n \\to \\infty} u_n$ هي:",
+    options: ["$-\\infty$", "$+\\infty$", "$0$", "غير موجودة"],
+    answer: 0,
+    exp: "لدينا $u_n \\le -n^2 + 3$. وبما أن $-n^2+3 \\to -\\infty$ فإن نهايتها $-\\infty$."
+  },
+  {
+    q: "إذا علمت أن $2 - \\frac{1}{n} \\le u_n \\le 2 + \\frac{3}{n^2}$ لكل $n \\ge 1$، فإن $\\lim_{n \\to \\infty} u_n$:",
+    options: ["غير محددة", "$0$", "$2$", "$5$"],
+    answer: 2,
+    exp: "بحسب مبرهنة الإحاطة، كلا الطرفين يسعى إلى $2$، إذاً النهاية $2$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\frac{n + (-1)^n \\sqrt{n}}{2n + 1}$ هي:",
+    options: ["$\\frac{1}{2}$", "$1$", "$0$", "غير موجودة"],
+    answer: 0,
+    exp: "بقسمة البسط والمقام على $n$: $\\frac{1 + (-1)^n/\\sqrt{n}}{2 + 1/n} \\to \\frac{1+0}{2+0} = \\frac{1}{2}$."
+  },
+  {
+    q: "كل متتالية متزايدة ومحدودة من الأعلى هي متتالية:",
+    options: ["متباعة", "متقاربة", "متناوبة", "غير مطردة"],
+    answer: 1,
+    exp: "مبرهنة أساسية في المنهاج: كل متتالية متزايدة ومحدودة من الأعلى تكون متقاربة نحو حدها الأعلى (Supremum)."
+  },
+  {
+    q: "كل متتالية متناقصة ومحدودة من الأدنى تكون:",
+    options: ["متقاربة", "متباعدة نحو $-\\infty$", "متباعدة نحو $+\\infty$", "دورية"],
+    answer: 0,
+    exp: "مبرهنة نصية: كل متتالية متناقصة ومحدودة من الأدنى متقاربة."
+  },
+  {
+    q: "المتتالية $u_n = 1 - \\frac{1}{n}$ لجميع $n \\ge 1$ هي متتالية:",
+    options: ["متناقصة ومحدودة من الأدنى", "متزايدة ومحدودة من الأعلى بالعدد $1$", "غير محدودة", "متباعدة"],
+    answer: 1,
+    exp: "المتتالية متزايدة وقيمها دائماً أقل من $1$ ونهايتها هي $1$."
+  },
+  {
+    q: "إذا كانت $(u_n)$ متزايدة تماماً وغير محدودة من الأعلى، فإن نهايتها تكون:",
+    options: ["متقاربة نحو $0$", "متباعدة نحو $+\\infty$", "متباعدة نحو $-\\infty$", "غير معينة"],
+    answer: 1,
+    exp: "متتالية متزايدة وغير محدودة من الأعلى تنتهي دوماً إلى $+\\infty$."
+  },
+  {
+    q: "إذا كانت $(u_n)$ متناقصة تماماً وغير محدودة من الأدنى، فإن نهايتها تكون:",
+    options: ["$0$", "$+\\infty$", "$-\\infty$", "قيمة سالبة ثابتة"],
+    answer: 2,
+    exp: "متتالية متناقصة وغير محدودة من الأدنى تنتهي حتماً إلى $-\\infty$."
+  },
+  {
+    q: "لتكن $u_n = \\frac{3n - 1}{n + 1}$. لمعرفة رتبة الدخول في المجال $I = ]2.9 , 3.1[$، نبحث عن شرط $\vert{}u_n - 3\vert{} < 0.1$. قيمة $\vert{}u_n - 3\vert{}$ تساوي:",
+    options: ["$\\frac{4}{n+1}$", "$\\frac{2}{n+1}$", "$\\frac{1}{n+1}$", "$\\frac{4}{n-1}$"],
+    answer: 0,
+    exp: "$\vert{}u_n - 3\vert{} = \vert{}\\frac{3n - 1 - 3n - 3}{n + 1}\vert{} = \vert{}\\frac{-4}{n+1}\vert{} = \\frac{4}{n+1}$."
+  },
+  {
+    q: "اعتماداً على السؤال السابق، الشرط $\\frac{4}{n+1} < 0.1$ يكافئ:",
+    options: ["$n > 40$", "$n > 39$", "$n > 41$", "$n < 39$"],
+    answer: 1,
+    exp: "$\\frac{4}{n+1} < \\frac{1}{10} \\Rightarrow n+1 > 40 \\Rightarrow n > 39$."
+  },
+  {
+    q: "تكون المتتاليتان $(u_n)$ و $(v_n)$ متجاورتين إذا تحقق:",
+    options: [
+      "إحداهما متزايدة والأخرى متناقصة فقط",
+      "إحداهما متزايدة والأخرى متناقصة، و $\\lim_{n \\to \\infty}(u_n - v_n) = 0$",
+      "كلاهما متزايدتان ولهما النهاية نفسها",
+      "مجموعهما يساوي الصفر"
+    ],
+    answer: 1,
+    exp: "تعريف المتتاليتين المتجاورتين: إحداهما متزايدة والأخرى متناقصة والفرق بينهما يسعى للصفر."
+  },
+  {
+    q: "إذا كانت المتتاليتان $(u_n)$ و $(v_n)$ متجاورتين، فإنهما:",
+    options: ["متباعدتان", "متقاربتان ولهما نهاية مشتركة", "متقاربتان نحو نهايتين مختلفتين", "متعاكستان"],
+    answer: 1,
+    exp: "مبرهنة أساسية: المتتاليتان المتجاورتان متقاربتان ولهما ذات النهاية."
+  },
+  {
+    q: "إذا كانت $u_n = 1 - \\frac{1}{n}$ و $v_n = 1 + \\frac{1}{n}$ لكل $n \\ge 1$، فإن المتتاليتين:",
+    options: ["غير متجاورتين", "متجاورتان ونهايتهما المشتركة $1$", "متجاورتان ونهايتهما المشتركة $0$", "متباعدتان"],
+    answer: 1,
+    exp: "$u$ متزايدة، $v$ متناقصة، والفرق $v_n - u_n = \\frac{2}{n} \\to 0$، إذاً متجاورتان وتتقاربان لـ $1$."
+  },
+  {
+    q: "لتكن $u_{n+1} = \\frac{1}{2}u_n + 3$ مع $u_0 = 1$. إذا كانت المتتالية متقاربة نحو $L$، فإن $L$ تساوي:",
+    options: ["$3$", "$6$", "$2$", "$4$"],
+    answer: 1,
+    exp: "النهاية تحقق المعادلة: $L = \\frac{1}{2}L + 3 \\Rightarrow \\frac{1}{2}L = 3 \\Rightarrow L = 6$."
+  },
+  {
+    q: "متتالية معرفة بالتدريج $u_{n+1} = \\sqrt{2 + u_n}$ حيث $u_n \\ge 0$ وهي متقاربة نحو $L$. قيمة $L$ هي:",
+    options: ["$1$", "$2$", "$-1$", "$\\sqrt{2}$"],
+    answer: 1,
+    exp: "المعادلة هي $L = \\sqrt{2+L} \\Rightarrow L^2 - L - 2 = 0 \\Rightarrow (L-2)(L+1)=0$، وبما أن الحدود موجبة فإن $L = 2$."
+  },
+  {
+    q: "نهاية المجموع $S_n = \\frac{1}{n^2} + \\frac{2}{n^2} + \\dots + \\frac{n}{n^2}$ عند $n \\to \\infty$ هي:",
+    options: ["$1$", "$0$", "$\\frac{1}{2}$", "$+\\infty$"],
+    answer: 2,
+    exp: "$S_n = \\frac{1+2+\\dots+n}{n^2} = \\frac{n(n+1)/2}{n^2} = \\frac{n^2+n}{2n^2} \\to \\frac{1}{2}$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\frac{4^n + 3^n}{4^{n+1} - 2^n}$ هي:",
+    options: ["$1$", "$\\frac{1}{4}$", "$0$", "$+\\infty$"],
+    answer: 1,
+    exp: "بإخراج $4^n$ من البسط و $4^{n+1} = 4 \\cdot 4^n$ من المقام: تؤول النسبة إلى $\\frac{1}{4}$."
+  },
+  {
+    q: "إذا كانت $u_n = \\frac{n^2 + \\sin(n)}{2n^2 + 5}$، فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
+    options: ["$\\frac{1}{2}$", "$0$", "$1$", "غير موجودة"],
+    answer: 0,
+    exp: "بقسمة البسط والمقام على $n^2$: البسط يؤول لـ $1 + 0$ والمقام لـ $2 + 0$، فالناتج $\\frac{1}{2}$."
+  },
+  {
+    q: "قيمة $\\lim_{n \\to \\infty} \\left(1 + \\frac{1}{3} + \\frac{1}{3^2} + \\dots + \\frac{1}{3^n}\\right)$ هي:",
+    options: ["$\\frac{3}{2}$", "$3$", "$2$", "$+\\infty$"],
+    answer: 0,
+    exp: "مجموع متتالية هندسية حدها الأول $1$ وأساسها $1/3$: $S_n = \\frac{1 - (1/3)^{n+1}}{1 - 1/3} \\to \\frac{1}{2/3} = \\frac{3}{2}$."
+  },
+  {
+    q: "إذا كانت $\\lim_{n \\to \\infty} u_n = 3$ و $\\lim_{n \\to \\infty} v_n = -2$، فإن $\\lim_{n \\to \\infty} (2u_n - 3v_n)$ تساوي:",
+    options: ["$0$", "$12$", "$15$", "$-3$"],
+    answer: 1,
+    exp: "بتطبيق خواص النهايات: $2(3) - 3(-2) = 6 + 6 = 12$."
+  },
+  {
+    q: "نهاية المتتالية $u_n = \\frac{\\sqrt{n^2 + 1}}{3n - 2}$ تساوي:",
+    options: ["$\\frac{1}{3}$", "$1$", "$0$", "$+\\infty$"],
+    answer: 0,
+    exp: "بإخراج $n$ عاملاً مشتركاً من الجذر: $\\frac{n\\sqrt{1 + 1/n^2}}{n(3 - 2/n)} \\to \\frac{1}{3}$."
+  },
+  {
+    q: "إذا كانت المتتالية $u_n = \\frac{a n + 5}{2n - 1}$ تتقارب نحو العدد $4$، فإن قيمة الثابت $a$ هي:",
+    options: ["$2$", "$4$", "$8$", "$10$"],
+    answer: 2,
+    exp: "نهاية المتتالية هي $\\frac{a}{2}$. وبما أن النهاية المعطاة هي $4$، فإن $\\frac{a}{2} = 4 \\Rightarrow a = 8$."
+  },
+  {
+    q: "المتتالية $u_n = \\frac{(-1)^n}{n^2}$ هي متتالية:",
+    options: ["متقاربة نحو $0$", "متباعدة", "متقاربة نحو $1$", "متقاربة نحو $-1$"],
+    answer: 0,
+    exp: "لدينا $\vert{}u_n\vert{} = \\frac{1}{n^2} \\to 0$، ومنه المتتالية تتقارب حتماً نحو الصفر."
+  },
+  {
+    q: "إذا كانت $u_n = n - \\sqrt{n^2 + 4n}$، فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
+    options: ["$-2$", "$0$", "$2$", "$-\\infty$"],
+    answer: 0,
+    exp: "بالضرب بالمرافق: $\\frac{n^2 - (n^2 + 4n)}{n + \\sqrt{n^2+4n}} = \\frac{-4n}{n + n\\sqrt{1+4/n}} \\to \\frac{-4}{1+1} = -2$."
+  }
+];
+
+function renderQuiz() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = quizData.map((item, index) => {
+    return `
+      <div class="question-card" id="card-${index}">
+        <div class="question-title">السؤال ${index + 1}: ${item.q}</div>
+        <div class="options">
+          ${item.options.map((opt, optIndex) => `
+            <label class="option-label" id="label-${index}-${optIndex}">
+              <input type="radio" name="question-${index}" value="${optIndex}">
+              <span>${opt}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="explanation" id="exp-${index}">
+          <strong>طريقة الحل والتعليل:</strong> ${item.exp}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function submitQuiz() {
+  let score = 0;
+  quizData.forEach((item, index) => {
+    const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+    const expDiv = document.getElementById(`exp-${index}`);
+    expDiv.style.display = 'block';
+
+    const correctLabel = document.getElementById(`label-${index}-${item.answer}`);
+    correctLabel.classList.add('correct-opt');
+
+    if (selected) {
+      const userAns = parseInt(selected.value);
+      if (userAns === item.answer) {
+        score++;
+      } else {
+        const userLabel = document.getElementById(`label-${index}-${userAns}`);
+        userLabel.classList.add('wrong-opt');
+      }
+    }
+  });
+
+  const resultBox = document.getElementById('resultBox');
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  const gradeMsg = document.getElementById('gradeMsg');
+  
+  resultBox.style.display = 'block';
+  scoreDisplay.textContent = `${score} / 40`;
+
+  if (score >= 36) gradeMsg.textContent = "ممتاز! استيعاب شامل ومتقن لمفاهيم الوحدة.";
+  else if (score >= 28) gradeMsg.textContent = "جيد جداً، راجع التعليلات المرفقة للأسئلة الخاطئة لضبط القواعد بدقة.";
+  else if (score >= 20) gradeMsg.textContent = "مستوى متوسط، ركّز على إزالة عدم التعيين ومبرهنات الإحاطة والمتتاليات المحدودة.";
+  else gradeMsg.textContent = "بحاجة لمراجعة عامة لمفاهيم تقارب وتباعد المتتاليات وتمارين الوحدة.";
+
+  document.getElementById('submitBtn').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (window.MathJax) {
+    MathJax.typesetPromise();
+  }
+}
+
+window.onload = () => {
+  renderQuiz();
+  if (window.MathJax) {
+    MathJax.typesetPromise();
+  }
+};
+</script>
+
+</body>
+</html>
