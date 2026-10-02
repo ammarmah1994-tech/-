@@ -4,18 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AMMAR - اختبار نهاية متتالية الشامل</title>
+  
+  <!-- إعدادات MathJax الدقيقة لمنع تداخل العربي مع الرموز الرياضية -->
   <script>
     window.MathJax = {
       tex: { 
         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
       },
-      startup: {
-        typeset: false
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       }
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <style>
     :root {
       --primary: #1e3a8a;
@@ -27,8 +31,17 @@
       --border: #cbd5e1;
       --text: #0f172a;
     }
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    }
+    body { 
+      background-color: var(--bg); 
+      color: var(--text); 
+      margin: 0; 
+      padding: 20px; 
+      line-height: 1.8; 
+    }
     .container { max-width: 920px; margin: 0 auto; }
     
     .header { 
@@ -75,7 +88,13 @@
       margin-bottom: 20px; 
       box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
     }
-    .question-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 15px; color: var(--primary); }
+    .question-title { 
+      font-weight: 700; 
+      font-size: 1.15rem; 
+      margin-bottom: 15px; 
+      color: var(--primary); 
+      unicode-bidi: plaintext;
+    }
     .options { display: grid; gap: 10px; }
     .option-label { 
       display: flex; 
@@ -88,7 +107,9 @@
       transition: all 0.2s ease; 
     }
     .option-label:hover { background-color: #f1f5f9; border-color: var(--primary-light); }
-    .option-label input { margin: 0; width: 18px; height: 18px; }
+    .option-label input { margin: 0; width: 18px; height: 18px; flex-shrink: 0; }
+    .option-label span { unicode-bidi: plaintext; font-size: 1.05rem; }
+    
     .explanation { 
       display: none; 
       margin-top: 15px; 
@@ -96,9 +117,17 @@
       border-radius: 8px; 
       background-color: #f8fafc; 
       border-right: 4px solid var(--primary-light); 
-      font-size: 0.95rem; 
+      font-size: 0.98rem; 
+      unicode-bidi: plaintext;
     }
-    .explanation p { margin: 5px 0; }
+    .explanation p { margin: 6px 0; }
+    
+    /* ضبط اتجاه الرياضيات المنفصلة */
+    mjx-container {
+      direction: ltr !important;
+      unicode-bidi: embed !important;
+    }
+    
     .btn { 
       display: inline-block; 
       background: linear-gradient(135deg, #1e3a8a, #2563eb); 
@@ -513,7 +542,7 @@ const rawQuizData = [
     answer: 0,
     exp: "<p>كل متتالية متزايدة وغير محدودة من الأعلى تتباعد دوماً نحو $+\\infty$.</p>"
   },
-  // 41 (جديد)
+  // 41
   {
     q: "إذا كانت المتتالية المعرفة بالصيغة التراجعية $u_{n+1} = \\frac{1}{2}u_n + 3$ مع $u_0 = 2$، فإن الحد العام $u_n$ بدلالة $n$ يساوي:",
     options: [
@@ -525,35 +554,35 @@ const rawQuizData = [
     answer: 0,
     exp: "<p><b>الحل:</b> بوضع $v_n = u_n - l$ حيث $l = \\frac{1}{2}l + 3 \\Rightarrow l = 6$.</p><p>تكون $(v_n)$ متتالية هندسية أساسها $q = 1/2$ وحدها الأول $v_0 = u_0 - 6 = 2 - 6 = -4$.</p><p>إذن $v_n = -4(1/2)^n$ وبالتالي $u_n = 6 - 4(1/2)^n$.</p>"
   },
-  // 42 (جديد)
+  // 42
   {
     q: "لتكن المتتالية $u_n = \\frac{n + (-1)^n \\sqrt{n}}{2n + 1}$ لكل $n \\ge 1$. فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
     options: ["$\\frac{1}{2}$", "$0$", "$1$", "غير موجودة"],
     answer: 0,
     exp: "<p><b>الحل:</b> بقسمة البسط والمقام على $n$:</p><p>$$u_n = \\frac{1 + \\frac{(-1)^n}{\\sqrt{n}}}{2 + \\frac{1}{n}}$$</p><p>بما أن $\\left|\\frac{(-1)^n}{\\sqrt{n}}\\right| = \\frac{1}{\\sqrt{n}} \\to 0$، فإن النهاية تساوي $\\frac{1 + 0}{2 + 0} = \\frac{1}{2}$.</p>"
   },
-  // 43 (جديد)
+  // 43
   {
     q: "إذا كانت المتتالية $u_n = \\frac{1}{\\sqrt{n^2+1}} + \\frac{1}{\\sqrt{n^2+2}} + \\dots + \\frac{1}{\\sqrt{n^2+n}}$ لجميع $n \\ge 1$، فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
     options: ["$1$", "$0$", "$\\frac{1}{2}$", "$+\\infty$"],
     answer: 0,
-    exp: "<p><b>الحل: بالإحاطة:</b> يحتوي المجموع على $n$ حداً أصغرها $\\frac{1}{\\sqrt{n^2+n}}$ وأكبرها $\\frac{1}{\\sqrt{n^2+1}}$:</p><p>$$\\frac{n}{\\sqrt{n^2+n}} \\le u_n \\le \\frac{n}{\\sqrt{n^2+1}}$$</p><p>نهاية الطرفين عند اللانهاية هي $1$، وبالتالي $\\lim_{n \\to \\infty} u_n = 1$.</p>"
+    exp: "<p><b>الحل بالإحاطة:</b> يحتوي المجموع على $n$ حداً أصغرها $\\frac{1}{\\sqrt{n^2+n}}$ وأكبرها $\\frac{1}{\\sqrt{n^2+1}}$:</p><p>$$\\frac{n}{\\sqrt{n^2+n}} \\le u_n \\le \\frac{n}{\\sqrt{n^2+1}}$$</p><p>نهاية الطرفين عند اللانهاية هي $1$، وبالتالي $\\lim_{n \\to \\infty} u_n = 1$.</p>"
   },
-  // 44 (جديد)
+  // 44
   {
     q: "إذا كانت المتتالية $(u_n)$ متزايدة تماماً ومتقاربة من العدد $3$، فإن جميع حدود المتتالية تحقق بالضرورة:",
     options: ["$u_n < 3$", "$u_n > 3$", "$u_n \\ge 3$", "لا يمكن المقارنة حتماً"],
     answer: 0,
     exp: "<p><b>الخاصة:</b> في المتتالية المتزايدة تماماً والمتقاربة من $l$، تكون نهايتها هي أصغر عنصر راجح وتكون جميع حدودها أصغر تماماً من النهاية: $u_n < l$.</p>"
   },
-  // 45 (جديد)
+  // 45
   {
     q: "قيمة النهاية $\\lim_{n \\to \\infty} \\frac{5^n - 3^n}{2 \\cdot 5^n + 4^n}$ تساوي:",
     options: ["$\\frac{1}{2}$", "$0$", "$-\\frac{3}{4}$", "$+\\infty$"],
     answer: 0,
     exp: "<p><b>الحل:</b> بإخراج $5^n$ عاملاً مشتركاً من البسط والمقام:</p><p>$$\\frac{5^n(1 - (3/5)^n)}{5^n(2 + (4/5)^n)} = \\frac{1 - (3/5)^n}{2 + (4/5)^n} \\to \\frac{1 - 0}{2 + 0} = \\frac{1}{2}$$</p>"
   },
-  // 46 (جديد)
+  // 46
   {
     q: "المتتالية المعرفة بالصيغة $u_n = 1 + \\frac{1}{2!} + \\frac{1}{3!} + \\dots + \\frac{1}{n!}$ لكل $n \\ge 1$ هي متتالية:",
     options: [
@@ -565,35 +594,35 @@ const rawQuizData = [
     answer: 0,
     exp: "<p><b>الحل:</b> $u_{n+1} - u_n = \\frac{1}{(n+1)!} > 0$ فهي متزايدة تماماً. وبما أن $n! \\ge 2^{n-1}$ فإنها تُحصر بمجموع متتالية هندسية متقاربة فهي محدودة من الأعلى وبالتالي متقاربة (ونهايتها هي العدد $e - 1$).</p>"
   },
-  // 47 (جديد)
+  // 47
   {
     q: "إذا كانت المتتالية تحقق $u_n \\ge n^2 - 3n$ لجميع $n \\ge 1$، فإن نهاية المتتالية $\\lim_{n \\to \\infty} u_n$ تساوي:",
     options: ["$+\\infty$", "$0$", "$-\\infty$", "غير معينة"],
     answer: 0,
     exp: "<p><b>مبرهنة المقارنة:</b> $\\lim_{n \\to \\infty} (n^2 - 3n) = +\\infty$. وبما أن $u_n \\ge n^2 - 3n$ فإن $\\lim_{n \\to \\infty} u_n = +\\infty$.</p>"
   },
-  // 48 (جديد)
+  // 48
   {
     q: "قيمة $\\lim_{n \\to \\infty} \\frac{n \\cdot \\sin(n!)}{n^2 + 1}$ تساوي:",
     options: ["$0$", "$1$", "غير موجودة", "$-1$"],
     answer: 0,
     exp: "<p><b>الحل بالإحاطة:</b> بما أن $|\\sin(n!)| \\le 1$ فإن:</p><p>$$|u_n| \\le \\frac{n}{n^2+1} \\to 0 \\Rightarrow \\lim_{n \\to \\infty} u_n = 0$$</p>"
   },
-  // 49 (جديد)
+  // 49
   {
     q: "متتالية هندسية حدودها موجبة تماماً أساسها $q$، تحقق $u_1 = 3$ و $u_3 = 12$. فإن نهاية مجموع حدودها $S = \\lim_{n \\to \\infty} \\sum_{k=1}^n \\frac{1}{u_k}$ تساوي:",
     options: ["$\\frac{2}{3}$", "$\\frac{1}{3}$", "$1$", "$+\\infty$"],
     answer: 0,
     exp: "<p><b>الخطوة 1:</b> $u_3 = u_1 q^2 \\Rightarrow 12 = 3q^2 \\Rightarrow q = 2$.</p><p><b>الخطوة 2:</b> المتتالية $\\frac{1}{u_k}$ هندسية حدها الأول $\\frac{1}{3}$ وأساسها $\\frac{1}{2}$.</p><p>مجموعها اللانهائي: $S = \\frac{1/3}{1 - 1/2} = \\frac{2}{3}$.</p>"
   },
-  // 50 (جديد)
+  // 50
   {
     q: "المتتالية $u_n = \\frac{3^n}{n!}$ لكل $n \\ge 1$ نهايتها عند اللانهاية تساوي:",
     options: ["$0$", "$1$", "$3$", "$+\\infty$"],
     answer: 0,
     exp: "<p><b>الحل:</b> نسبة حدين متعاقبين هي $\\frac{u_{n+1}}{u_n} = \\frac{3}{n+1} \\to 0 < 1$. وبما أن النسبة أصغر تماماً من $1$ عند اللانهاية، فإن المتتالية تؤول دوماً إلى $0$.</p>"
   },
-  // 51 (جديد)
+  // 51
   {
     q: "إذا كانت $(u_n)$ و $(v_n)$ متتاليتين معرفتين بـ $u_n = \\sum_{k=1}^n \\frac{1}{k^2}$ و $v_n = u_n + \\frac{1}{n}$، فإن المتتاليتين:",
     options: [
@@ -605,14 +634,14 @@ const rawQuizData = [
     answer: 0,
     exp: "<p>$(u_n)$ متزايدة تماماً، و $(v_n)$ متناقصة تماماً (لأن $v_{n+1}-v_n = \\frac{-1}{n(n+1)^2} < 0$)، وفرقهما $v_n - u_n = 1/n \\to 0$. فهما متجاورتان حتماً.</p>"
   },
-  // 52 (جديد)
+  // 52
   {
     q: "نهاية المتتالية $u_n = \\sqrt[3]{n^3 + 3n^2} - n$ عندما $n \\to \\infty$ تساوي:",
     options: ["$1$", "$0$", "$3$", "$+\\infty$"],
     answer: 0,
     exp: "<p><b>الحل:</b> باستخدام المتطابقة $a^3 - b^3 = (a-b)(a^2+ab+b^2)$:</p><p>$$u_n = \\frac{3n^2}{(n^3+3n^2)^{2/3} + n(n^3+3n^2)^{1/3} + n^2} \\to \\frac{3n^2}{n^2 + n^2 + n^2} = \\frac{3}{3} = 1$$</p>"
   },
-  // 53 (جديد)
+  // 53
   {
     q: "لتكن $u_{n+1} = \\frac{u_n}{1 + 2u_n}$ مع $u_0 = 1$. تكون المتتالية المساعدة $v_n = \\frac{1}{u_n}$ متتالية:",
     options: [
@@ -624,28 +653,28 @@ const rawQuizData = [
     answer: 0,
     exp: "<p>$$v_{n+1} = \\frac{1}{u_{n+1}} = \\frac{1 + 2u_n}{u_n} = \\frac{1}{u_n} + 2 = v_n + 2$$</p><p>فالمتتالية $(v_n)$ حسابية أساسها $r = 2$.</p>"
   },
-  // 54 (جديد)
+  // 54
   {
     q: "إذا كانت المتتالية $u_n$ تحقق $2 - \\frac{3}{n} \\le u_n \\le \\frac{2n^2 + 5}{n^2 + n}$ لكل $n \\ge 1$، فإن $\\lim_{n \\to \\infty} u_n$ تساوي:",
     options: ["$2$", "$0$", "$3$", "غير معينة"],
     answer: 0,
     exp: "<p>الطرف الأيسر يسعى إلى $2 - 0 = 2$. والطرف الأيمن يسعى إلى $\\frac{2n^2}{n^2} = 2$. بحسب مبرهنة الإحاطة تكون النهاية $2$.</p>"
   },
-  // 55 (جديد)
+  // 55
   {
     q: "لتكن المتتالية $u_n = \\cos\\left(\\frac{\\pi n^2 + 1}{3n^2 + 2}\\right)$. فإن نهايتها عند اللانهاية تساوي:",
     options: ["$\\frac{1}{2}$", "$\\frac{\\sqrt{3}}{2}$", "$0$", "$1$"],
     answer: 0,
     exp: "<p>بما أن مضمون التجيب $\\frac{\\pi n^2+1}{3n^2+2} \\to \\frac{\\pi}{3}$، وبما أن تابع التجيب مستمر فإن النهاية هي $\\cos(\\pi/3) = \\frac{1}{2}$.</p>"
   },
-  // 56 (جديد)
+  // 56
   {
     q: "إذا كانت $u_n = \\frac{1}{\\sqrt{n}}$ لكل $n \\ge 1$، وأردنا أن تنتمي الحدود إلى المجال $]-10^{-2}, 10^{-2}[$، يكفي أن يكون $n$ أكبر تماماً من:",
     options: ["$10000$", "$100$", "$1000$", "$10^6$"],
     answer: 0,
     exp: "<p>$$\\frac{1}{\\sqrt{n}} < 10^{-2} \\iff \\sqrt{n} > 10^2 = 100 \\iff n > 10000$$</p>"
   },
-  // 57 (جديد)
+  // 57
   {
     q: "المتتالية $u_n = (-1)^n + \\frac{1}{n}$ لكل $n \\ge 1$ هي متتالية:",
     options: [
@@ -657,21 +686,21 @@ const rawQuizData = [
     answer: 0,
     exp: "<p>الحدود الزوجية تسعى إلى $1$ والحدود الفردية تسعى إلى $-1$، فهي لا تملك نهاية وحيدة، لكن قيمها محصورة في المجال $[-1, 2]$ فهي محدودة وليست متقاربة.</p>"
   },
-  // 58 (جديد)
+  // 58
   {
     q: "قيمة المجموع $S_n = \\sum_{k=1}^n \\frac{1}{4k^2 - 1}$ عندما $n \\to \\infty$ تساوي:",
     options: ["$\\frac{1}{2}$", "$1$", "$\\frac{1}{4}$", "$0$"],
     answer: 0,
     exp: "<p><b>الخطوة 1:</b> $\\frac{1}{4k^2-1} = \\frac{1}{2}\\left(\\frac{1}{2k-1} - \\frac{1}{2k+1}\\right)$.</p><p><b>الخطوة 2:</b> بعد الاختصار المتعاقب: $S_n = \\frac{1}{2}\\left(1 - \\frac{1}{2n+1}\\right) \\to \\frac{1}{2}(1 - 0) = \\frac{1}{2}$.</p>"
   },
-  // 59 (جديد)
+  // 59
   {
     q: "إذا كانت المتتالية $u_n$ متقاربة نحو عدد حقيقي $l$، وكانت جميع حدودها تنتمي للمجال المغلق $[a, b]$، فإن نهايتها $l$ تحقق حتماً:",
     options: ["$l \\in [a, b]$", "$l > b$", "$l < a$", "لا يمكن تحديد موضعها"],
     answer: 0,
     exp: "<p>مبرهنة أساسية: إذا كانت $a \\le u_n \\le b$ لجميع الحدود، وكانت المتتالية متقاربة، فإن نهايتها تقع حتماً في نفس المجال المغلق $a \\le l \\le b$.</p>"
   },
-  // 60 (جديد)
+  // 60
   {
     q: "لتكن المتتالية $u_{n+1} = \\frac{2u_n}{u_n + 1}$ مع $u_0 = 3$. بما أن التابع المرفق $f(x)=\\frac{2x}{x+1}$ متزايد ومستمر على $[1, 3]$، فإن نهاية المتتالية هي:",
     options: ["$1$", "$0$", "$2$", "$3$"],
@@ -728,7 +757,7 @@ function renderQuiz() {
 
 function typesetMath() {
   if (window.MathJax && window.MathJax.typesetPromise) {
-    MathJax.typesetPromise().catch((err) => console.log('MathJax error:', err));
+    MathJax.typesetPromise().catch((err) => console.error('MathJax error:', err));
   }
 }
 
@@ -776,11 +805,13 @@ function submitQuiz() {
 
 window.addEventListener('DOMContentLoaded', () => {
   renderQuiz();
-  if (window.MathJax) {
-    MathJax.startup.promise.then(() => {
+  // تأخير بسيط للتأكد من اكتمال تحميل سكريبت MathJax
+  const checkMathJax = setInterval(() => {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      clearInterval(checkMathJax);
       typesetMath();
-    });
-  }
+    }
+  }, 100);
 });
 </script>
 
